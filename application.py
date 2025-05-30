@@ -28,11 +28,11 @@ with open(json_path, 'r', encoding='utf-8') as file:
 
 scheduler = BackgroundScheduler()
 
-file_path = data["file_path"]
+file_path = os.path.join(script_dir, 'data inputs', '20241206_comptes action opérations.xlsx')
 
 
 # Construire le chemin complet vers le fichier de la base de données SQLite
-db_path = os.path.join(script_dir, 'data', 'PatrimoineBoursier.db')
+db_path = os.path.join(script_dir, 'data outputs', 'PatrimoineBoursier.db')
 
 # Créer l'URL de connexion pour SQLAlchemy
 db_url = f'sqlite:///{db_path}'
@@ -144,11 +144,11 @@ def UpdateDataAsset(file_path):
 
     dfPerformance = pd.DataFrame(data)
     # Construire le chemin complet vers le fichier de la base de données SQLite
-    CMcsv_path = os.path.join(script_dir, 'data', 'Cours_Marchés.csv')
+    CMcsv_path = os.path.join(script_dir, 'data outputs', 'Cours_Marchés.csv')
     dfPerformance.to_csv(CMcsv_path, index=False)
     
     dfValeurTotal = dfPerformance.groupby('Date')[['Valeur marché', 'Montant investi euro']].sum()
-    VTcsv_path = os.path.join(script_dir, 'data', 'ValeurMarcheJour.csv')
+    VTcsv_path = os.path.join(script_dir, 'data outputs', 'ValeurMarcheJour.csv')
     dfValeurTotal.to_csv(VTcsv_path, index=True)
 
 @app.route('/api/valeurmarche', methods=['GET'])
@@ -156,7 +156,7 @@ def get_valeurmarchejour_data():
     try:
 
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        VTcsv_path = os.path.join(script_dir, 'data', 'ValeurMarcheJour.csv')
+        VTcsv_path = os.path.join(script_dir, 'data outputs', 'ValeurMarcheJour.csv')
         dfValeurTotal = pd.read_csv(VTcsv_path)
 
         # Convertir le DataFrame en JSON avec l'orientation 'records'
@@ -175,7 +175,7 @@ def get_valeurmarchejour_last():
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construire le chemin complet vers le fichier CSV
-    VTcsv_path = os.path.join(script_dir, 'data', 'ValeurMarcheJour.csv')
+    VTcsv_path = os.path.join(script_dir, 'data outputs', 'ValeurMarcheJour.csv')
 
     # Lire le fichier CSV dans un DataFrame
     dfValeurTotal = pd.read_csv(VTcsv_path)
